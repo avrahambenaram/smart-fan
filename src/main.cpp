@@ -39,7 +39,10 @@ void loop() {
   temperature = 1.0 / temperature;                     // inverso
   temperature -= 273.15;                               // Kelvin → Celsius
 
-  DBGF("ADC: %d --- Temperature: %.2f\n", adc, temperature);
+  auto voltage = (adc / ADC_MAX) * NTC_V;
+
+  DBGF("ADC: %d --- Voltage: %.4f --- Temperature: %.2fºC\n", adc, voltage,
+       temperature);
 
   delay(1000);
 }

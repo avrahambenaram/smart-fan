@@ -1,0 +1,15 @@
+// Internal system parameters
+
+#define NTC_PIN 33  // NTC pin
+#define RELAY_PIN 2 // Relay pin
+#define NTC_V 3.3   // NTC pin Voltage
+
+#define ESP32_ADC_BITS 12
+#define ADC_MAX (float)((1 << ESP32_ADC_BITS) - 1)
+
+// NTC parameters (adjust for your project)
+
+#define SERIES_RESISTOR 9500.0    // fixed resistor (10k)
+#define NOMINAL_RESISTANCE 8500.0 // NTC in 25°C
+#define NOMINAL_TEMPERATURE 22.0  // °C
+#define B_COEFFICIENT 3950.0
