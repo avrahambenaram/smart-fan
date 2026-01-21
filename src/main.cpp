@@ -1,22 +1,14 @@
-
 #include <Arduino.h>
 #include <math.h>
 
-#define NTC_PIN 33
-#define RELAY_PIN 2
-
-// Parâmetros do NTC (ajuste se o seu for diferente)
-#define SERIES_RESISTOR 9500.0    // resistor fixo (10k)
-#define NOMINAL_RESISTANCE 8500.0 // NTC a 25°C
-#define NOMINAL_TEMPERATURE 22.0  // °C
-#define B_COEFFICIENT 3950.0
+#include "Config.h"
 
 void setup() {
   Serial.begin(9600);
 
-  // Configuração do ADC
-  analogReadResolution(12);       // 0–4095
-  analogSetAttenuation(ADC_11db); // até ~3.3V
+  // ADC Configuration
+  analogReadResolution(ESP32_ADC_BITS);
+  analogSetAttenuation(ADC_11db);
 
   pinMode(NTC_PIN, INPUT);
   pinMode(RELAY_PIN, OUTPUT);
@@ -27,15 +19,14 @@ void setup() {
 void loop() {
   int adc = analogRead(NTC_PIN);
 
-  // Evita divisão por zero
-  if (adc <= 0 || adc >= 4095) {
-    Serial.println("Leitura ADC inválida");
+  if (adc <= 0 || adc >= ADC_MAX) {
+    Serial.println("Invalid ADC reading");
     delay(2000);
     return;
   }
 
   // Converter ADC para resistência do NTC
-  float voltageRatio = (4095.0 / adc) - 1.0;
+  float voltageRatio = (ADC_MAX / adc) - 1.0;
   float ntcResistance = SERIES_RESISTOR / voltageRatio;
 
   // Fórmula Beta
