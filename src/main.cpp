@@ -2,6 +2,7 @@
 #include <math.h>
 
 #include "Config.h"
+#include "DBG.h"
 
 void setup() {
   Serial.begin(9600);
@@ -38,11 +39,7 @@ void loop() {
   temperature = 1.0 / temperature;                     // inverso
   temperature -= 273.15;                               // Kelvin → Celsius
 
-  Serial.print("ADC: ");
-  Serial.print(adc);
-  Serial.print(" | Temp: ");
-  Serial.print(temperature);
-  Serial.println(" °C");
+  DBGF("ADC: %d --- Temperature: %.2f\n", adc, temperature);
 
   delay(1000);
 }
