@@ -11,13 +11,13 @@ enum class WifiStatus {
   WIFI_ERROR
 };
 
-struct WifiNetwork {
+struct WifiNetworkDto {
   String ssid;
   bool secure;       // true = needs password
   WifiStatus status; // 0..3
   int32_t rssi;
 };
 
-using NetworkPtr = std::shared_ptr<WifiNetwork>;
-using NetworkList = std::vector<WifiNetwork>;
+using NetworkPtr = std::shared_ptr<WifiNetworkDto>;
+using NetworkList = std::vector<WifiNetworkDto>;
 using NetworkListPtr = std::shared_ptr<NetworkList>;
