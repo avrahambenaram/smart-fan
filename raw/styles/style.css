@@ -1,5 +1,5 @@
-@import "/styles/variables.css";
-@import "/styles/base.css";
+@import "./variables.css";
+@import "./base.css";
 
 #actions {
   width: 100%;

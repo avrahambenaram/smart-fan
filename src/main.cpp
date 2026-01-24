@@ -2,7 +2,7 @@
 #include <Preferences.h>
 #include <math.h>
 #include <memory>
-#include <WebServer.h>
+#include <ESPAsyncWebServer.h>
 
 #include "Config.h"
 #include "DBG.h"
@@ -31,7 +31,7 @@ EspWifiSTA wifiSTA{statusNetwork};
 WifiManager wifi{wifiAP, wifiScanner, wifiStorage, wifiSTA};
 EspFanService fanService;
 
-WebServer server{80};
+AsyncWebServer server{80};
 FanController fanController{server, fanService};
 SetupController setupController{server, wifiStorage, wifiSTA, statusNetwork, networks};
 WebController webController{server};
@@ -92,5 +92,4 @@ void loop() {
   //      temperature);
 
   wifiAP.loop();
-  server.handleClient();
 }

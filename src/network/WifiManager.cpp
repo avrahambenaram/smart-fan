@@ -4,7 +4,10 @@
 #include "WiFi.h"
 #include <memory>
 
-void WifiManager::setup() { WiFi.mode(WIFI_AP_STA); }
+void WifiManager::setup() {
+  WiFi.mode(WIFI_AP_STA);
+  WiFi.setSleep(false);
+}
 
 void WifiManager::start() {
   auto dto = storage.restore();

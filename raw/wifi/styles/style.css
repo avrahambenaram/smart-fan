@@ -1,5 +1,5 @@
-@import "/styles/variables.css";
-@import "/styles/base.css";
+@import "../../styles/variables.css";
+@import "../../styles/base.css";
 
 #networks {
   width: 100%;
@@ -109,4 +109,3 @@
 #wifi-modal-actions > button:hover {
   opacity: .8;
 }
-

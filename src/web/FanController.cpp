@@ -2,21 +2,22 @@
 #include "web/FanController.hpp"
 
 void FanController::setup() {
-  server.on("/api/fan/status", HTTP_GET, [this]() { handleStatus(*this); });
-  server.on("/api/fan/toggle", HTTP_POST, [this]() { handleToggle(*this); });
+  server.on("/api/fan/status", HTTP_GET, [this](AsyncWebServerRequest *request) { handleStatus(*this, request); });
+  server.on("/api/fan/toggle", HTTP_POST, [this](AsyncWebServerRequest *request) { handleToggle(*this, request); });
 }
 
-void FanController::handleStatus(FanController &fanController) {
+void FanController::handleStatus(FanController &fanController, AsyncWebServerRequest *request) {
   JsonDocument doc;
   doc["status"] = fanController.fanService.isPowered();
   String json;
   serializeJson(doc, json);
-  fanController.server.sendHeader("Cache-Control", "no-store");
-  fanController.server.sendHeader("Connection", "close");
-  fanController.server.send(200, "application/json", json);
+  auto *res = request->beginResponse(200, "application/json", json);
+  res->addHeader("Cache-Control", "no-store");
+  res->addHeader("Connection", "close");
+  request->send(res);
 }
 
-void FanController::handleToggle(FanController &fanController) {
+void FanController::handleToggle(FanController &fanController, AsyncWebServerRequest *request) {
   fanController.fanService.toggle();
-  fanController.server.send(200);
+  request->send(200);
 }

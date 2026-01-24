@@ -1,15 +1,15 @@
 #pragma once
 
-#include <WebServer.h>
+#include <ESPAsyncWebServer.h>
 
 class WebController {
 public:
-  WebController(WebServer &server) : server(server) {}
+  WebController(AsyncWebServer &server) : server(server) {}
   void setup();
 
 private:
-  WebServer &server;
+  AsyncWebServer &server;
 
-  static void handleFile(WebController &webController);
+  static void handleFile(WebController &webController, AsyncWebServerRequest *request);
   static String getContentType(String filename);
 };

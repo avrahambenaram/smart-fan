@@ -7,25 +7,24 @@ void WebController::setup() {
     Serial.println("LittleFS mount failed");
     return;
   }
-  server.onNotFound([this]() { handleFile(*this); });
+  server.onNotFound([this](AsyncWebServerRequest *request) {
+    handleFile(*this, request);
+  });
 }
 
-void WebController::handleFile(WebController &webController) {
-  String path = webController.server.uri();
-  if (path == "/")
-    path = "/index.html";
+void WebController::handleFile(WebController &webController, AsyncWebServerRequest *request) {
+  String path = request->url();
+  if (path.endsWith("/"))
+    path += "index.html";
   if (!LittleFS.exists(path))
     path = "/index.html";
 
-  File file = LittleFS.open(path, "r");
+  auto contentType = getContentType(path);
 
-  // Determine content type
-  String contentType = getContentType(path);
-
-  webController.server.sendHeader("Cache-Control", "no-store");
-  webController.server.sendHeader("Connection", "close");
-  webController.server.streamFile(file, contentType);
-  file.close();
+  auto *res = request->beginResponse(LittleFS, path, contentType);
+  res->addHeader("Cache-Control", "no-store");
+  res->addHeader("Connection", "close");
+  request->send(res);
 }
 
 String WebController::getContentType(String filename) {

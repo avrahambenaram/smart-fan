@@ -1,18 +1,18 @@
 #pragma once
 
 #include "service/FanService.hpp"
-#include <WebServer.h>
+#include <ESPAsyncWebServer.h>
 
 class FanController {
 public:
-  FanController(WebServer &server, FanService &fanService)
+  FanController(AsyncWebServer &server, FanService &fanService)
     : server(server), fanService(fanService) {}
   void setup();
 
 private:
   FanService &fanService;
-  WebServer &server;
+  AsyncWebServer &server;
 
-  static void handleStatus(FanController &fanController);
-  static void handleToggle(FanController &fanController);
+  static void handleStatus(FanController &fanController, AsyncWebServerRequest *request);
+  static void handleToggle(FanController &fanController, AsyncWebServerRequest *request);
 };

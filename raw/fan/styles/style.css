@@ -1,0 +1,32 @@
+@import "../../styles/variables.css";
+@import "../../styles/base.css";
+
+#subtitle {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+#status {
+  width: 100px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+#status-text {
+  color: var(--powered-off);
+}
+#status-text.powered {
+  color: var(--powered-on);
+}
+#toggle-btn {
+  border-radius: 10px;
+  background-color: var(--main-color);
+  padding: 10px;
+  color: white;
+  cursor: pointer;
+  transition: all .2s linear;
+}
+#toggle-btn:hover {
+  opacity: .6;
+}

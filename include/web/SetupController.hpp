@@ -4,11 +4,11 @@
 #include "network/WifiStorage.hpp"
 #include "network/dto/WifiNetworkDto.hpp"
 #include <Arduino.h>
-#include <WebServer.h>
+#include <ESPAsyncWebServer.h>
 
 class SetupController {
 public:
-  SetupController(WebServer &server, WifiStorage &wifiStorage, WifiSTA &wifiSTA,
+  SetupController(AsyncWebServer &server, WifiStorage &wifiStorage, WifiSTA &wifiSTA,
               WifiNetworkPtr statusNetwork, WifiNetworkListPtr networks)
       : server(server), wifiStorage(wifiStorage), wifiSTA(wifiSTA),
         statusNetwork(statusNetwork), networks(networks) {}
@@ -16,14 +16,21 @@ public:
 
 private:
   bool running{false};
-  WebServer &server;
+  AsyncWebServer &server;
 
   WifiStorage &wifiStorage;
   WifiSTA &wifiSTA;
   WifiNetworkPtr statusNetwork;
   WifiNetworkListPtr networks;
 
-  static void handleSetup(SetupController &setupServer);
-  static void handleList(SetupController &setupServer);
-  static void handleStatus(SetupController &setupServer);
+  static void handleSetup(
+    SetupController &setupServer,
+    AsyncWebServerRequest *request,
+    uint8_t *data,
+    size_t len,
+    size_t index,
+    size_t total
+  );
+  static void handleList(SetupController &setupServer, AsyncWebServerRequest *request);
+  static void handleStatus(SetupController &setupServer, AsyncWebServerRequest *request);
 };
