@@ -1,8 +1,32 @@
 #include <Arduino.h>
+#include <Preferences.h>
 #include <math.h>
+#include <memory>
 
 #include "Config.h"
 #include "DBG.h"
+#include "network/WifiManager.hpp"
+#include "network/dto/WifiNetworkDto.hpp"
+#include "network/imp/EspWifiAP.hpp"
+#include "network/imp/EspWifiSTA.hpp"
+#include "network/imp/EspWifiScanner.hpp"
+#include "network/imp/EspWifiStorage.hpp"
+#include "network/observer/APToggler.hpp"
+#include "network/observer/Reconnector.hpp"
+#include "network/observer/ScannerToggler.hpp"
+#include "network/observer/ToggleIndicator.hpp"
+#include "network/observer/WebToggler.hpp"
+#include "web/SetupServer.hpp"
+
+auto statusNetwork = std::make_shared<WifiNetworkDto>();
+auto networks = std::make_shared<WifiNetworkList>();
+Preferences prefs;
+EspWifiAP wifiAP;
+EspWifiScanner wifiScanner{networks, statusNetwork};
+EspWifiStorage wifiStorage{prefs};
+EspWifiSTA wifiSTA{statusNetwork};
+WifiManager wifi{wifiAP, wifiScanner, wifiStorage, wifiSTA};
+SetupServer setupServer{wifiStorage, wifiSTA, statusNetwork, networks};
 
 void setup() {
   Serial.begin(9600);
@@ -15,6 +39,15 @@ void setup() {
   pinMode(RELAY_PIN, OUTPUT);
 
   delay(1000);
+
+  prefs.begin("smartfan", false);
+  wifiSTA.registerObserver(new APToggler(wifiAP));
+  wifiSTA.registerObserver(new Reconnector(wifiStorage, wifiSTA));
+  wifiSTA.registerObserver(new ScannerToggler(wifiScanner));
+  wifiSTA.registerObserver(new ToggleIndicator());
+  wifiSTA.registerObserver(new WebToggler(setupServer));
+  wifi.setup();
+  wifi.start();
 }
 
 void loop() {
@@ -45,4 +78,6 @@ void loop() {
        temperature);
 
   delay(1000);
+  setupServer.loop();
+  wifiAP.loop();
 }
