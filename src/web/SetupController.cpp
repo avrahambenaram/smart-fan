@@ -3,9 +3,9 @@
 #include <LittleFS.h>
 
 #include "network/dto/WifiNetworkDto.hpp"
-#include "web/SetupServer.hpp"
+#include "web/SetupController.hpp"
 
-void SetupServer::setup() {
+void SetupController::setup() {
   if (!LittleFS.begin(true)) {
     Serial.println("LittleFS mount failed");
     return;
@@ -16,27 +16,27 @@ void SetupServer::setup() {
   server.on("/wifi-status", HTTP_GET, [this]() { handleStatus(*this); });
 }
 
-void SetupServer::start() {
+void SetupController::start() {
   if (running)
     return;
   server.begin();
   running = true;
 }
 
-void SetupServer::stop() {
+void SetupController::stop() {
   if (!running)
     return;
   server.stop();
   running = false;
 }
 
-void SetupServer::loop() {
+void SetupController::loop() {
   if (!running)
     return;
   server.handleClient();
 }
 
-void SetupServer::handleSetup(SetupServer &setupServer) {
+void SetupController::handleSetup(SetupController &setupServer) {
   if (setupServer.server.method() != HTTP_POST) {
     setupServer.server.send(405, "text/plain", "Method Not Allowed");
     return;
@@ -61,7 +61,7 @@ void SetupServer::handleSetup(SetupServer &setupServer) {
   setupServer.wifiSTA.connect(cmd);
 }
 
-void SetupServer::handleList(SetupServer &setupServer) {
+void SetupController::handleList(SetupController &setupServer) {
   JsonDocument doc;
   JsonArray array = doc.to<JsonArray>();
 
@@ -79,7 +79,7 @@ void SetupServer::handleList(SetupServer &setupServer) {
   setupServer.server.send(200, "application/json", json);
 }
 
-void SetupServer::handleStatus(SetupServer &setupServer) {
+void SetupController::handleStatus(SetupController &setupServer) {
   JsonDocument doc;
   doc["ssid"] = setupServer.statusNetwork->ssid;
   doc["status"] = static_cast<int>(setupServer.statusNetwork->status);
@@ -91,7 +91,7 @@ void SetupServer::handleStatus(SetupServer &setupServer) {
   setupServer.server.send(200, "application/json", json);
 }
 
-void SetupServer::handleFile(SetupServer &setupServer) {
+void SetupController::handleFile(SetupController &setupServer) {
   String path = setupServer.server.uri();
   if (path == "/")
     path = "/index.html";
@@ -109,7 +109,7 @@ void SetupServer::handleFile(SetupServer &setupServer) {
   file.close();
 }
 
-String SetupServer::getContentType(String filename) {
+String SetupController::getContentType(String filename) {
   if (filename.endsWith(".html"))
     return "text/html";
   if (filename.endsWith(".css"))
