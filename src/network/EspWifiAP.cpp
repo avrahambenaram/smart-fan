@@ -15,7 +15,7 @@ void EspWifiAP::start() {
 
   DBG("[WifiAP] Starting...");
   WiFi.softAPConfig(apIP, gateway, subnet);
-  WiFi.softAP("SmartFan Setup", "543912yodi", 0);
+  WiFi.softAP("SmartFan Setup", nullptr, 0);
   dns.start(DNS_PORT, "*", apIP);
 
   running = true;
@@ -28,6 +28,7 @@ void EspWifiAP::stop() {
   DBG("[WifiAP] Stopping...");
   WiFi.softAPdisconnect(true);
   dns.stop();
+
   running = false;
 }
 

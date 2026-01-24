@@ -8,6 +8,7 @@ export class WifiManager {
 
   setup() {
     this.#fetchWifi();
+    this.#fetchStatus();
     setInterval(() => this.#fetchWifi(), 15000);
     setInterval(() => this.#fetchStatus(), 5000);
   }
@@ -49,8 +50,8 @@ export class WifiManager {
 
   async connectToWifi(wifiConnectDto) {
     try {
-      await this.#_connectToWifi(wifiConnectDto);
       this.#markStatus(wifiConnectDto, 1);
+      await this.#_connectToWifi(wifiConnectDto);
     } catch (err) {
       console.error(err);
       this.#markStatus(wifiConnectDto, 3);
@@ -71,6 +72,7 @@ export class WifiManager {
   }
 
   #markStatus(wifiDto, status) {
+    this.#clearStatus();
     const i = this.wifis.findIndex(w => w.ssid === wifiDto.ssid);
     if (i >= 0) {
       this.wifis[i].status = status;
@@ -85,6 +87,12 @@ export class WifiManager {
     }
     this.wifis.unshift(wifi);
     this.#notify('update');
+  }
+
+  #clearStatus() {
+    const wifi = this.wifis.find(w => w.status !== 0);
+    if (wifi)
+      wifi.status = 0;
   }
 
   addListener(event, cb) {

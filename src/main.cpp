@@ -12,10 +12,9 @@
 #include "network/imp/EspWifiScanner.hpp"
 #include "network/imp/EspWifiStorage.hpp"
 #include "network/observer/APToggler.hpp"
+#include "network/observer/MDNSToggler.hpp"
 #include "network/observer/Reconnector.hpp"
-#include "network/observer/ScannerToggler.hpp"
 #include "network/observer/ToggleIndicator.hpp"
-#include "network/observer/WebToggler.hpp"
 #include "web/SetupServer.hpp"
 
 auto statusNetwork = std::make_shared<WifiNetworkDto>();
@@ -43,9 +42,8 @@ void setup() {
   prefs.begin("smartfan", false);
   wifiSTA.registerObserver(new APToggler(wifiAP));
   wifiSTA.registerObserver(new Reconnector(wifiStorage, wifiSTA));
-  wifiSTA.registerObserver(new ScannerToggler(wifiScanner));
   wifiSTA.registerObserver(new ToggleIndicator());
-  wifiSTA.registerObserver(new WebToggler(setupServer));
+  wifiSTA.registerObserver(new MDNSToggler());
 
   wifi.setup();
   wifi.start();
