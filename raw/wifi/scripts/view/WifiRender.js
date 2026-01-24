@@ -100,10 +100,7 @@ export class WifiRender {
   createButton(wifi) {
     const btn = document.createElement('button');
     btn.classList.add('network-option');
-    if (wifi.status != 2)
-      btn.addEventListener('click', () => this.selectWifi(wifi));
-    if (wifi.status == 2)
-      btn.style.cursor = 'auto';
+    btn.addEventListener('click', () => this.selectWifi(wifi));
     return btn;
   }
 
