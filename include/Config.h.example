@@ -1,7 +1,7 @@
 // Internal system parameters
 
 #define NTC_PIN 33  // NTC pin
-#define RELAY_PIN 2 // Relay pin
+#define RELAY_PIN 4 // Relay pin
 #define NTC_V 3.3   // NTC pin Voltage
 
 #define ESP32_ADC_BITS 12
@@ -9,7 +9,15 @@
 
 // NTC parameters (adjust for your project)
 
-#define SERIES_RESISTOR 9500.0    // fixed resistor (10k)
-#define NOMINAL_RESISTANCE 8500.0 // NTC in 25°C
-#define NOMINAL_TEMPERATURE 22.0  // °C
+#define SERIES_RESISTOR 10000.0    // fixed resistor (10k)
+#define NOMINAL_RESISTANCE 10000.0 // NTC in 25°C
+#define NOMINAL_TEMPERATURE 25.0   // °C
 #define B_COEFFICIENT 3950.0
+
+// User config
+#define RF_INACTIVITY_MS 60000     // Inactivity rf watchdog in ms
+#define RF_TIMEOUT 5000            // Timeout for switching from ble to bt in ms
+#define WIFI_RECONNECT_TIMER 60000 // Wifi reconnect timer time in ms
+#define WIFI_SCAN_TASK_DELAY                                                   \
+  15000                 // Delay for waiting before processing scan results
+#define INDICATOR_PIN 2 // Pin for wifi indication
