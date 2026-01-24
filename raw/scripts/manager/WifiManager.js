@@ -19,7 +19,7 @@ export class WifiManager {
   }
 
   async #fetchWifi() {
-    const response = await fetch('/wifi-list');
+    const response = await fetch('/api/wifi');
     if (!response.ok)
       return;
     const data = await response.json();
@@ -30,7 +30,7 @@ export class WifiManager {
   }
 
   async #fetchStatus() {
-    const response = await fetch('/wifi-status');
+    const response = await fetch('/api/wifi/status');
     if (!response.ok)
       return;
     const data = await response.json();
@@ -60,7 +60,7 @@ export class WifiManager {
   }
 
   async #_connectToWifi(wifiDto) {
-    const response = await fetch('/wifi-setup', {
+    const response = await fetch('/api/wifi/setup', {
       method: "POST",
       headers: {
         'Content-Type': 'application/json',

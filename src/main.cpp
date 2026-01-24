@@ -2,6 +2,7 @@
 #include <Preferences.h>
 #include <math.h>
 #include <memory>
+#include <WebServer.h>
 
 #include "Config.h"
 #include "DBG.h"
@@ -15,7 +16,10 @@
 #include "network/observer/MDNSToggler.hpp"
 #include "network/observer/Reconnector.hpp"
 #include "network/observer/ToggleIndicator.hpp"
-#include "web/SetupServer.hpp"
+#include "service/imp/EspFanService.hpp"
+#include "web/FanController.hpp"
+#include "web/SetupController.hpp"
+#include "web/WebController.hpp"
 
 auto statusNetwork = std::make_shared<WifiNetworkDto>();
 auto networks = std::make_shared<WifiNetworkList>();
@@ -25,7 +29,12 @@ EspWifiScanner wifiScanner{networks, statusNetwork};
 EspWifiStorage wifiStorage{prefs};
 EspWifiSTA wifiSTA{statusNetwork};
 WifiManager wifi{wifiAP, wifiScanner, wifiStorage, wifiSTA};
-SetupServer setupServer{wifiStorage, wifiSTA, statusNetwork, networks};
+EspFanService fanService;
+
+WebServer server{80};
+FanController fanController{server, fanService};
+SetupController setupController{server, wifiStorage, wifiSTA, statusNetwork, networks};
+WebController webController{server};
 
 void setup() {
   Serial.begin(9600);
@@ -48,8 +57,11 @@ void setup() {
   wifi.setup();
   wifi.start();
 
-  setupServer.setup();
-  setupServer.start();
+  webController.setup();
+  fanController.setup();
+  setupController.setup();
+
+  server.begin();
 }
 
 void loop() {
@@ -79,6 +91,6 @@ void loop() {
   // DBGF("ADC: %d --- Voltage: %.4f --- Temperature: %.2fºC\n", adc, voltage,
   //      temperature);
 
-  setupServer.loop();
   wifiAP.loop();
+  server.handleClient();
 }

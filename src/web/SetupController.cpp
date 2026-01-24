@@ -10,39 +10,18 @@ void SetupController::setup() {
     Serial.println("LittleFS mount failed");
     return;
   }
-  server.onNotFound([this]() { handleFile(*this); });
-  server.on("/wifi-setup", HTTP_POST, [this]() { handleSetup(*this); });
-  server.on("/wifi-list", HTTP_GET, [this]() { handleList(*this); });
-  server.on("/wifi-status", HTTP_GET, [this]() { handleStatus(*this); });
+  server.on("/api/wifi", HTTP_GET, [this]() { handleList(*this); });
+  server.on("/api/wifi/status", HTTP_GET, [this]() { handleStatus(*this); });
+  server.on("/api/wifi/setup", HTTP_POST, [this]() { handleSetup(*this); });
 }
 
-void SetupController::start() {
-  if (running)
-    return;
-  server.begin();
-  running = true;
-}
-
-void SetupController::stop() {
-  if (!running)
-    return;
-  server.stop();
-  running = false;
-}
-
-void SetupController::loop() {
-  if (!running)
-    return;
-  server.handleClient();
-}
-
-void SetupController::handleSetup(SetupController &setupServer) {
-  if (setupServer.server.method() != HTTP_POST) {
-    setupServer.server.send(405, "text/plain", "Method Not Allowed");
+void SetupController::handleSetup(SetupController &setupController) {
+  if (setupController.server.method() != HTTP_POST) {
+    setupController.server.send(405, "text/plain", "Method Not Allowed");
     return;
   }
 
-  String body = setupServer.server.arg("plain");
+  String body = setupController.server.arg("plain");
   JsonDocument doc;
   DeserializationError err = deserializeJson(doc, body);
   if (err)
@@ -54,18 +33,18 @@ void SetupController::handleSetup(SetupController &setupServer) {
   String gateway = doc["gateway"];
   String subnet = doc["subnet"];
   WifiConnectDto cmd{ssid, pass, ip, gateway, subnet};
-  setupServer.server.sendHeader("Cache-Control", "no-store");
-  setupServer.server.sendHeader("Connection", "close");
-  setupServer.server.send(200);
-  setupServer.wifiStorage.save(cmd);
-  setupServer.wifiSTA.connect(cmd);
+  setupController.server.sendHeader("Cache-Control", "no-store");
+  setupController.server.sendHeader("Connection", "close");
+  setupController.server.send(200);
+  setupController.wifiStorage.save(cmd);
+  setupController.wifiSTA.connect(cmd);
 }
 
-void SetupController::handleList(SetupController &setupServer) {
+void SetupController::handleList(SetupController &setupController) {
   JsonDocument doc;
   JsonArray array = doc.to<JsonArray>();
 
-  for (auto network : *setupServer.networks) {
+  for (auto network : *setupController.networks) {
     JsonObject o = array.add<JsonObject>();
     o["ssid"] = network.ssid;
     o["secure"] = network.secure;
@@ -74,55 +53,19 @@ void SetupController::handleList(SetupController &setupServer) {
   }
   String json;
   serializeJson(doc, json);
-  setupServer.server.sendHeader("Cache-Control", "no-store");
-  setupServer.server.sendHeader("Connection", "close");
-  setupServer.server.send(200, "application/json", json);
+  setupController.server.sendHeader("Cache-Control", "no-store");
+  setupController.server.sendHeader("Connection", "close");
+  setupController.server.send(200, "application/json", json);
 }
 
-void SetupController::handleStatus(SetupController &setupServer) {
+void SetupController::handleStatus(SetupController &setupController) {
   JsonDocument doc;
-  doc["ssid"] = setupServer.statusNetwork->ssid;
-  doc["status"] = static_cast<int>(setupServer.statusNetwork->status);
-  doc["rssi"] = setupServer.statusNetwork->rssi;
+  doc["ssid"] = setupController.statusNetwork->ssid;
+  doc["status"] = static_cast<int>(setupController.statusNetwork->status);
+  doc["rssi"] = setupController.statusNetwork->rssi;
   String json;
   serializeJson(doc, json);
-  setupServer.server.sendHeader("Cache-Control", "no-store");
-  setupServer.server.sendHeader("Connection", "close");
-  setupServer.server.send(200, "application/json", json);
-}
-
-void SetupController::handleFile(SetupController &setupServer) {
-  String path = setupServer.server.uri();
-  if (path == "/")
-    path = "/index.html";
-  if (!LittleFS.exists(path))
-    path = "/index.html";
-
-  File file = LittleFS.open(path, "r");
-
-  // Determine content type
-  String contentType = getContentType(path);
-
-  setupServer.server.sendHeader("Cache-Control", "no-store");
-  setupServer.server.sendHeader("Connection", "close");
-  setupServer.server.streamFile(file, contentType);
-  file.close();
-}
-
-String SetupController::getContentType(String filename) {
-  if (filename.endsWith(".html"))
-    return "text/html";
-  if (filename.endsWith(".css"))
-    return "text/css";
-  if (filename.endsWith(".js"))
-    return "application/javascript";
-  if (filename.endsWith(".png"))
-    return "image/png";
-  if (filename.endsWith(".jpg"))
-    return "image/jpeg";
-  if (filename.endsWith(".svg"))
-    return "image/svg+xml";
-  if (filename.endsWith(".ico"))
-    return "image/x-icon";
-  return "text/plain";
+  setupController.server.sendHeader("Cache-Control", "no-store");
+  setupController.server.sendHeader("Connection", "close");
+  setupController.server.send(200, "application/json", json);
 }
