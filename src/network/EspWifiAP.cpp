@@ -15,7 +15,7 @@ void EspWifiAP::start() {
 
   DBG("[WifiAP] Starting...");
   WiFi.softAPConfig(apIP, gateway, subnet);
-  WiFi.softAP("i8t setup", "spying1234", 1);
+  WiFi.softAP("SmartFan Setup", "543912yodi", 0);
   dns.start(DNS_PORT, "*", apIP);
 
   running = true;

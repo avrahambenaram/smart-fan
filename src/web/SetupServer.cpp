@@ -19,6 +19,8 @@ void SetupServer::setup() {
 void SetupServer::start() {
   if (running)
     return;
+  if (wifiSTA.isConnected())
+    return;
   server.begin();
   running = true;
 }

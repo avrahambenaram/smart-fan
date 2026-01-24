@@ -4,3 +4,4 @@
 .ccls
 .ccls-cache
 include/Config.h
+data/

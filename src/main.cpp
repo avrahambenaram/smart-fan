@@ -46,38 +46,41 @@ void setup() {
   wifiSTA.registerObserver(new ScannerToggler(wifiScanner));
   wifiSTA.registerObserver(new ToggleIndicator());
   wifiSTA.registerObserver(new WebToggler(setupServer));
+
   wifi.setup();
   wifi.start();
+
+  setupServer.setup();
+  setupServer.start();
 }
 
 void loop() {
-  int adc = analogRead(NTC_PIN);
+  // int adc = analogRead(NTC_PIN);
+  //
+  // if (adc <= 0 || adc >= ADC_MAX) {
+  //   Serial.println("Invalid ADC reading");
+  //   delay(2000);
+  //   return;
+  // }
+  //
+  // // Converter ADC para resistência do NTC
+  // float voltageRatio = (ADC_MAX / adc) - 1.0;
+  // float ntcResistance = SERIES_RESISTOR / voltageRatio;
+  //
+  // // Fórmula Beta
+  // float temperature;
+  // temperature = ntcResistance / NOMINAL_RESISTANCE;    // (R/Ro)
+  // temperature = log(temperature);                      // ln(R/Ro)
+  // temperature /= B_COEFFICIENT;                        // 1/B * ln(R/Ro)
+  // temperature += 1.0 / (NOMINAL_TEMPERATURE + 273.15); // + (1/To)
+  // temperature = 1.0 / temperature;                     // inverso
+  // temperature -= 273.15;                               // Kelvin → Celsius
+  //
+  // auto voltage = (adc / ADC_MAX) * NTC_V;
+  //
+  // DBGF("ADC: %d --- Voltage: %.4f --- Temperature: %.2fºC\n", adc, voltage,
+  //      temperature);
 
-  if (adc <= 0 || adc >= ADC_MAX) {
-    Serial.println("Invalid ADC reading");
-    delay(2000);
-    return;
-  }
-
-  // Converter ADC para resistência do NTC
-  float voltageRatio = (ADC_MAX / adc) - 1.0;
-  float ntcResistance = SERIES_RESISTOR / voltageRatio;
-
-  // Fórmula Beta
-  float temperature;
-  temperature = ntcResistance / NOMINAL_RESISTANCE;    // (R/Ro)
-  temperature = log(temperature);                      // ln(R/Ro)
-  temperature /= B_COEFFICIENT;                        // 1/B * ln(R/Ro)
-  temperature += 1.0 / (NOMINAL_TEMPERATURE + 273.15); // + (1/To)
-  temperature = 1.0 / temperature;                     // inverso
-  temperature -= 273.15;                               // Kelvin → Celsius
-
-  auto voltage = (adc / ADC_MAX) * NTC_V;
-
-  DBGF("ADC: %d --- Voltage: %.4f --- Temperature: %.2fºC\n", adc, voltage,
-       temperature);
-
-  delay(1000);
   setupServer.loop();
   wifiAP.loop();
 }
