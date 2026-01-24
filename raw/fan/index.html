@@ -6,7 +6,7 @@
     <title></title>
     <link href="styles/style.css" rel="stylesheet">
     <link rel="icon" type="image/svg+xml" href="/icon.svg">
-    <script src="scripts/main.js">
+    <script type="module" src="scripts/main.js">
     </script>
   </head>
   <body>
@@ -17,7 +17,7 @@
         <p>Controle do ventilador</p>
         <div id="status">
           <span>Status:</span>
-          <span id="status-text" class="powered">Ligado</span>
+          <span id="status-text">Desligado</span>
         </div>
       </div>
       <form id="toggle-form" method="POST" action="/api/fan/toggle">
