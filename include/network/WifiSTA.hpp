@@ -1,17 +1,21 @@
 #pragma once
 
-#include "network/WifiSTAObserver.hpp"
+#include "Arduino.h"
+#include "WifiAP.hpp"
+#include "freertos/FreeRTOS.h"
+#include "network/WifiObserver.hpp"
 #include "network/dto/WifiConnectDto.hpp"
-#include <vector>
+#include <WiFi.h>
+#include <cstdint>
+#include <memory>
 
 class WifiSTA {
 public:
-  void reconnect();
-  bool isConnected();
-  void connect(WifiConnectDto wifiConnectDto);
+  virtual void connect(WifiConnectDto connectCmd) = 0;
+  virtual void reconnect() = 0;
+  virtual bool isConnected() = 0;
+  virtual void registerObserver(WifiObserver *observer) = 0;
+  virtual void unregisterObserver(WifiObserver *observer) = 0;
 
-private:
-  void connectDHCP(WifiConnectDto connectCmd);
-  void connectStatic(WifiConnectDto connectCmd);
-  void connect(String ssid, String pass);
+  virtual ~WifiSTA() = default;
 };

@@ -18,6 +18,6 @@ struct WifiNetworkDto {
   int32_t rssi;
 };
 
-using NetworkPtr = std::shared_ptr<WifiNetworkDto>;
-using NetworkList = std::vector<WifiNetworkDto>;
-using NetworkListPtr = std::shared_ptr<NetworkList>;
+using WifiNetworkPtr = std::shared_ptr<WifiNetworkDto>;
+using WifiNetworkList = std::vector<WifiNetworkDto>;
+using WifiNetworkListPtr = std::shared_ptr<WifiNetworkList>;
