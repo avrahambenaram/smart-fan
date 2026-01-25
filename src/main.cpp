@@ -17,6 +17,8 @@
 #include "network/observer/Reconnector.hpp"
 #include "network/observer/ToggleIndicator.hpp"
 #include "service/imp/EspFanService.hpp"
+#include "service/imp/EspTemperatureService.hpp"
+#include "service/observer/FanTemperatureObserver.hpp"
 #include "web/FanController.hpp"
 #include "web/SetupController.hpp"
 #include "web/WebController.hpp"
@@ -30,6 +32,7 @@ EspWifiStorage wifiStorage{prefs};
 EspWifiSTA wifiSTA{statusNetwork};
 WifiManager wifi{wifiAP, wifiScanner, wifiStorage, wifiSTA};
 EspFanService fanService;
+EspTemperatureService temperatureService;
 
 AsyncWebServer server{80};
 FanController fanController{server, fanService};
@@ -47,6 +50,8 @@ void setup() {
   pinMode(RELAY_PIN, OUTPUT);
 
   delay(1000);
+
+  temperatureService.registerObserver(new FanTemperatureObserver(fanService));
 
   prefs.begin("smartfan", false);
   wifiSTA.registerObserver(new APToggler(wifiAP));
