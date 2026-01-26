@@ -1,5 +1,7 @@
 #pragma once
 
+#include "service/FanObserver.hpp"
+
 class FanService {
 public:
   virtual ~FanService() = default;
@@ -8,4 +10,6 @@ public:
   virtual void toggle();
   virtual void powerOn();
   virtual void powerOff();
+  virtual void registerObserver(FanObserver *observer);
+  virtual void unregisterObserver(FanObserver *observer);
 };

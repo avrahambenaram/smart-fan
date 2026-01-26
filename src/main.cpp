@@ -20,6 +20,7 @@
 #include "service/imp/EspFanService.hpp"
 #include "service/imp/EspTemperatureService.hpp"
 #include "service/observer/FanTemperatureObserver.hpp"
+#include "service/observer/FanToggler.hpp"
 #include "web/FanController.hpp"
 #include "web/SetupController.hpp"
 #include "web/WebController.hpp"
@@ -54,6 +55,8 @@ void setup() {
   delay(1000);
 
   temperatureService.registerObserver(new FanTemperatureObserver(fanService));
+
+  fanService.registerObserver(new FanToggler());
 
   prefs.begin("smartfan", false);
   wifiSTA.registerObserver(new APToggler(wifiAP));
