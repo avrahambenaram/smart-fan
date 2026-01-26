@@ -12,6 +12,7 @@
 #include "network/imp/EspWifiSTA.hpp"
 #include "network/imp/EspWifiScanner.hpp"
 #include "network/imp/EspWifiStorage.hpp"
+#include "network/imp/EspWifiReconnector.hpp"
 #include "network/observer/APToggler.hpp"
 #include "network/observer/MDNSToggler.hpp"
 #include "network/observer/Reconnector.hpp"
@@ -30,6 +31,7 @@ EspWifiAP wifiAP;
 EspWifiScanner wifiScanner{networks, statusNetwork};
 EspWifiStorage wifiStorage{prefs};
 EspWifiSTA wifiSTA{statusNetwork};
+EspWifiReconnector wifiReconnector{wifiStorage, wifiSTA};
 WifiManager wifi{wifiAP, wifiScanner, wifiStorage, wifiSTA};
 EspFanService fanService;
 EspTemperatureService temperatureService;
@@ -55,7 +57,7 @@ void setup() {
 
   prefs.begin("smartfan", false);
   wifiSTA.registerObserver(new APToggler(wifiAP));
-  wifiSTA.registerObserver(new Reconnector(wifiStorage, wifiSTA));
+  wifiSTA.registerObserver(new Reconnector(wifiReconnector));
   wifiSTA.registerObserver(new ToggleIndicator());
   wifiSTA.registerObserver(new MDNSToggler());
 
