@@ -17,6 +17,7 @@ void EspTemperatureService::setup() {
     xTimerStart(timer, 0);
 
   auto temp = prefs.getFloat("powering-temp", TEMPERATURE_POWERING);
+  poweringTemperature = temp;
 }
 
 void EspTemperatureService::enable() {

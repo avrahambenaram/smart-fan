@@ -56,6 +56,7 @@ void setup() {
   delay(1000);
 
   temperatureReader.read();
+  temperatureService.setup();
 
   fanService.registerObserver(new FanToggler());
 
