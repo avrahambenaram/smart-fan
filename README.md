@@ -39,8 +39,6 @@ You can also use the `PIO_ENV` variable to access the ESP logs, with `PIO_ENV=de
 ### Pre-requirements
 - PlatformIO (Core or IDE)
 
-Add uri `https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_index.json` to additional_urls in arduino-cli
-
 ### ✅ Running
 ```bash
 # Clone repository
@@ -55,3 +53,7 @@ pio run -t uploadfs && pio run -t upload
 # Monitor serial
 pio device monitor
 ```
+
+Now, access it's wifi called `SmartFan Setup` and set it to a wifi or control it's fan
+
+When connected to a wifi, you can access it's webpage by accessing `http://smartfan.local`
