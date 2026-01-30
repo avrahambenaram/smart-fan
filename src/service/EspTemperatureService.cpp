@@ -2,34 +2,32 @@
 #include "Config.h"
 #include "DBG.h"
 
-EspTemperatureService::EspTemperatureService(Preferences &prefs,
+EspTemperatureService::EspTemperatureService(TemperatureStorage &storage,
                                              TemperatureReader &reader,
                                              FanService &fan)
-    : prefs(prefs), reader(reader), fan(fan) {
+    : storage(storage), reader(reader), fan(fan) {
   timer = xTimerCreate("temp-service", pdMS_TO_TICKS(TEMPERATURE_READ_TIMER),
                        pdTRUE, this, EspTemperatureService::readTimer);
 }
 
 void EspTemperatureService::setup() {
-  auto active = prefs.getBool("temperature", true);
-  enabled = active;
-  if (active)
+  auto dto = storage.restore();
+  poweringTemperature = dto.poweringTemperature;
+  enabled = dto.enabled;
+  if (enabled)
     xTimerStart(timer, 0);
-
-  auto temp = prefs.getFloat("powering-temp", TEMPERATURE_POWERING);
-  poweringTemperature = temp;
 }
 
 void EspTemperatureService::enable() {
   DBG("[TemperatureService] Enabling...");
   enabled = true;
-  prefs.putBool("temperature", enabled);
+  saveConfig();
 }
 
 void EspTemperatureService::disable() {
   DBG("[TemperatureService] Disabling...");
   enabled = false;
-  prefs.putBool("temperature", enabled);
+  saveConfig();
 }
 
 void EspTemperatureService::toggle() {
@@ -41,7 +39,15 @@ void EspTemperatureService::toggle() {
 
 void EspTemperatureService::setPoweringTemperature(float temp) {
   poweringTemperature = temp;
-  prefs.putFloat("powering-temp", poweringTemperature);
+  saveConfig();
+}
+
+void EspTemperatureService::saveConfig() {
+  TemperatureDto dto{
+    enabled,
+    poweringTemperature
+  };
+  storage.save(dto);
 }
 
 void EspTemperatureService::readTimer(TimerHandle_t xTimer) {

@@ -3,6 +3,7 @@
 #include "service/TemperatureService.hpp"
 #include "service/TemperatureReader.hpp"
 #include "service/FanService.hpp"
+#include "service/TemperatureStorage.hpp"
 
 #include <freertos/FreeRTOS.h>
 #include <freertos/timers.h>
@@ -11,7 +12,7 @@
 
 class EspTemperatureService : public TemperatureService {
 public:
-  EspTemperatureService(Preferences &prefs, TemperatureReader &reader, FanService &fan);
+  EspTemperatureService(TemperatureStorage &storage, TemperatureReader &reader, FanService &fan);
   void setup();
   void enable() override;
   void disable() override;
@@ -22,9 +23,10 @@ private:
   bool enabled;
   float poweringTemperature;
   TimerHandle_t timer;
-  Preferences &prefs;
+  TemperatureStorage &storage;
   TemperatureReader &reader;
   FanService &fan;
 
+  void saveConfig();
   static void readTimer(TimerHandle_t xTimer);
 };

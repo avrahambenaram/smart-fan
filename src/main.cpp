@@ -18,6 +18,7 @@
 #include "network/observer/Reconnector.hpp"
 #include "service/imp/EspFanService.hpp"
 #include "service/imp/EspTemperatureService.hpp"
+#include "service/imp/EspTemperatureStorage.hpp"
 #include "web/FanController.hpp"
 #include "web/SetupController.hpp"
 #include "web/WebController.hpp"
@@ -36,7 +37,8 @@ EspWifiReconnector wifiReconnector{wifiStorage, wifiSTA};
 WifiManager wifi{wifiAP, wifiScanner, wifiStorage, wifiSTA};
 EspFanService fanService;
 EspTemperatureReader temperatureReader;
-EspTemperatureService temperatureService{prefs, temperatureReader, fanService};
+EspTemperatureStorage temperatureStorage{prefs};
+EspTemperatureService temperatureService{temperatureStorage, temperatureReader, fanService};
 
 AsyncWebServer server{80};
 FanController fanController{server, fanService};
