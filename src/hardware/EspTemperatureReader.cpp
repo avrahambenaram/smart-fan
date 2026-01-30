@@ -25,6 +25,6 @@ float EspTemperatureReader::read() {
   temperature = 1.0 / temperature;                     // inverso
   temperature -= 273.15;                               // Kelvin → Celsius
 
-  DBGF("[TemperatureReader] Current temperature: %.2f\n", temperature);
+  DBGF("[TemperatureReader] Current temperature: %.2fºC\n", temperature);
   return temperature;
 }
