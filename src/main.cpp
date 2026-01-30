@@ -17,11 +17,11 @@
 #include "network/observer/MDNSToggler.hpp"
 #include "network/observer/Reconnector.hpp"
 #include "service/imp/EspFanService.hpp"
-#include "service/observer/FanTemperatureObserver.hpp"
+#include "service/imp/EspTemperatureService.hpp"
 #include "web/FanController.hpp"
 #include "web/SetupController.hpp"
 #include "web/WebController.hpp"
-#include "hardware/EspTemperatureService.hpp"
+#include "hardware/EspTemperatureReader.hpp"
 #include "hardware/ToggleIndicator.hpp"
 #include "hardware/FanToggler.hpp"
 
@@ -35,7 +35,8 @@ EspWifiSTA wifiSTA{statusNetwork};
 EspWifiReconnector wifiReconnector{wifiStorage, wifiSTA};
 WifiManager wifi{wifiAP, wifiScanner, wifiStorage, wifiSTA};
 EspFanService fanService;
-EspTemperatureService temperatureService;
+EspTemperatureReader temperatureReader;
+EspTemperatureService temperatureService{prefs, temperatureReader, fanService};
 
 AsyncWebServer server{80};
 FanController fanController{server, fanService};
@@ -54,7 +55,7 @@ void setup() {
 
   delay(1000);
 
-  temperatureService.registerObserver(new FanTemperatureObserver(fanService));
+  temperatureReader.read();
 
   fanService.registerObserver(new FanToggler());
 
