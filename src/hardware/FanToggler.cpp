@@ -1,6 +1,6 @@
 #include <Arduino.h>
 
-#include "service/observer/FanToggler.hpp"
+#include "hardware/FanToggler.hpp"
 #include "Config.h"
 
 FanToggler::FanToggler() {

@@ -16,14 +16,14 @@
 #include "network/observer/APToggler.hpp"
 #include "network/observer/MDNSToggler.hpp"
 #include "network/observer/Reconnector.hpp"
-#include "network/observer/ToggleIndicator.hpp"
 #include "service/imp/EspFanService.hpp"
-#include "service/imp/EspTemperatureService.hpp"
 #include "service/observer/FanTemperatureObserver.hpp"
-#include "service/observer/FanToggler.hpp"
 #include "web/FanController.hpp"
 #include "web/SetupController.hpp"
 #include "web/WebController.hpp"
+#include "hardware/EspTemperatureService.hpp"
+#include "hardware/ToggleIndicator.hpp"
+#include "hardware/FanToggler.hpp"
 
 auto statusNetwork = std::make_shared<WifiNetworkDto>();
 auto networks = std::make_shared<WifiNetworkList>();

@@ -1,4 +1,4 @@
-#include "network/observer/ToggleIndicator.hpp"
+#include "hardware/ToggleIndicator.hpp"
 #include "Arduino.h"
 #include "Config.h"
 
