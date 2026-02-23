@@ -3,5 +3,7 @@
 .gcc-flags.json
 .ccls
 .ccls-cache
+.idea
 include/Config.h
 data/
+compile_commands.json

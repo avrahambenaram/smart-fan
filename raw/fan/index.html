@@ -19,15 +19,47 @@
         &nbsp;
         Smart Fan Control
       </h1>
-      <div id="subtitle">
+      <div class="subtitle">
         <p>Controle do ventilador</p>
         <div id="status">
           <span>Status:</span>
-          <span id="status-text">Desligado</span>
+          <span class="status-text" id="status-text">Desligado</span>
         </div>
       </div>
       <form id="toggle-form" method="POST" action="/api/fan/toggle">
-        <button id="toggle-btn" type="submit">Ligar/Desligar</button>
+        <div>
+          <button class="form-btn" type="submit">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-power"><path d="M18.36 6.64a9 9 0 1 1-12.73 0"></path><line x1="12" y1="2" x2="12" y2="12"></line></svg>
+            <span>Ligar/Desligar</span>
+          </button>
+        </div>
+      </form>
+      <div class="subtitle">
+        <p>Temperature de acionamento</p>
+        <div id="status">
+          <span>Status:</span>
+          <span class="status-text" id="status-temperature-text">Desligado</span>
+        </div>
+      </div>
+      <form method="POST">
+        <label class="label-input">
+          <span>Habilitar</span>
+          <input type="checkbox" name="enable">
+        </label>
+        <label class="label-input">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-thermometer"><path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26a4.5 4.5 0 1 0 5 0z"></path></svg>
+          <span>Temperatura (Cº): </span>
+          <input
+            type="number"
+            name="temperature"
+            inputmode="decimal"
+            placeholder="Digite uma temperatura em Cº"
+            max="50"
+          >
+        </label>
+        <div>
+          <button class="form-btn" type="submit">Salvar</button>
+        </div>
       </form>
     </main>
   </body>

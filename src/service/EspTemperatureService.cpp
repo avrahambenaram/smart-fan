@@ -18,6 +18,8 @@ void EspTemperatureService::setup() {
     xTimerStart(timer, 0);
 }
 
+bool EspTemperatureService::isEnabled() { return enabled; }
+
 void EspTemperatureService::enable() {
   DBG("[TemperatureService] Enabling...");
   enabled = true;
@@ -42,11 +44,12 @@ void EspTemperatureService::setPoweringTemperature(float temp) {
   saveConfig();
 }
 
+float EspTemperatureService::getPoweringTemperature() {
+  return poweringTemperature;
+}
+
 void EspTemperatureService::saveConfig() {
-  TemperatureDto dto{
-    enabled,
-    poweringTemperature
-  };
+  TemperatureDto dto{enabled, poweringTemperature};
   storage.save(dto);
 }
 

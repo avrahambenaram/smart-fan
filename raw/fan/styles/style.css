@@ -1,10 +1,18 @@
 @import "../../styles/variables.css";
 @import "../../styles/base.css";
 
-#subtitle {
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+.subtitle {
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+.subtitle > p {
+  font-weight: bold;
 }
 #status {
   width: 100px;
@@ -13,20 +21,37 @@
   justify-content: space-between;
   align-items: flex-start;
 }
-#status-text {
+.status-text {
   color: var(--powered-off);
 }
-#status-text.powered {
+.status-text.powered {
   color: var(--powered-on);
 }
-#toggle-btn {
+.form-btn {
   border-radius: 10px;
   background-color: var(--main-color);
   padding: 10px;
   color: white;
   cursor: pointer;
   transition: all .2s linear;
+
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
 }
-#toggle-btn:hover {
+.form-btn:hover {
   opacity: .6;
+}
+.label-input {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 10px;
+}
+.label-input > input[type=number] {
+  width: 200px;
+  padding: 5px 10px;
+  border-radius: 15px;
 }

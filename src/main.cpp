@@ -1,18 +1,21 @@
 #include <Arduino.h>
+#include <ESPAsyncWebServer.h>
 #include <Preferences.h>
 #include <math.h>
 #include <memory>
-#include <ESPAsyncWebServer.h>
 
 #include "Config.h"
 #include "DBG.h"
+#include "hardware/EspTemperatureReader.hpp"
+#include "hardware/FanToggler.hpp"
+#include "hardware/ToggleIndicator.hpp"
 #include "network/WifiManager.hpp"
 #include "network/dto/WifiNetworkDto.hpp"
 #include "network/imp/EspWifiAP.hpp"
+#include "network/imp/EspWifiReconnector.hpp"
 #include "network/imp/EspWifiSTA.hpp"
 #include "network/imp/EspWifiScanner.hpp"
 #include "network/imp/EspWifiStorage.hpp"
-#include "network/imp/EspWifiReconnector.hpp"
 #include "network/observer/APToggler.hpp"
 #include "network/observer/MDNSToggler.hpp"
 #include "network/observer/Reconnector.hpp"
@@ -22,9 +25,6 @@
 #include "web/FanController.hpp"
 #include "web/SetupController.hpp"
 #include "web/WebController.hpp"
-#include "hardware/EspTemperatureReader.hpp"
-#include "hardware/ToggleIndicator.hpp"
-#include "hardware/FanToggler.hpp"
 
 auto statusNetwork = std::make_shared<WifiNetworkDto>();
 auto networks = std::make_shared<WifiNetworkList>();
@@ -38,11 +38,13 @@ WifiManager wifi{wifiAP, wifiScanner, wifiStorage, wifiSTA};
 EspFanService fanService;
 EspTemperatureReader temperatureReader;
 EspTemperatureStorage temperatureStorage{prefs};
-EspTemperatureService temperatureService{temperatureStorage, temperatureReader, fanService};
+EspTemperatureService temperatureService{temperatureStorage, temperatureReader,
+                                         fanService};
 
 AsyncWebServer server{80};
 FanController fanController{server, fanService};
-SetupController setupController{server, wifiStorage, wifiSTA, statusNetwork, networks};
+SetupController setupController{server, wifiStorage, wifiSTA, statusNetwork,
+                                networks};
 WebController webController{server};
 
 void setup() {
